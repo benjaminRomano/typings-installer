@@ -4,7 +4,7 @@
   "description": "Get typings for your project",
   "version": "0.0.1",
   "icon": "icon.png",
-  "publisher": "Benjamin Romano",
+  "publisher": "benjaminromano",
   "engines": {
     "vscode": "^0.10.1"
   },
