@@ -1,0 +1,3 @@
+interface InstallOptions {
+	save?: boolean;
+}

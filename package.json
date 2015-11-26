@@ -1,0 +1,46 @@
+{
+  "name": "typings-installer",
+  "displayName": "Typings Installer",
+  "description": "Get typings for your project",
+  "version": "0.0.1",
+  "icon": "icon.png",
+  "publisher": "Benjamin Romano",
+  "engines": {
+    "vscode": "^0.10.1"
+  },
+  "repository": { 
+    "type": "git",
+    "url": "https://github.com/benjaminRomano/typings-installer.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:typingsInstaller.getTypings",
+    "onCommand:typingsInstaller.getTypingsSave"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "typingsInstaller.getTypings",
+        "title": "Get Typings"
+      },
+      {
+        "command": "typingsInstaller.getTypingsSave",
+        "title": "Get Typings And Save"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
+  },
+  "devDependencies": {
+    "typescript": "^1.6.2",
+    "vscode": "0.10.x"
+  },
+  "dependencies": {
+    "q": "^1.4.1"
+  }
+}
