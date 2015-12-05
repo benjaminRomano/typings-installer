@@ -1,27 +1,26 @@
 
 import * as vscode from 'vscode';
-import * as Q from 'q';
 import * as typingsUtil from './typingsUtil';
 
 export function activate(context: vscode.ExtensionContext) {
-	var disposable = vscode.commands.registerCommand('typingsInstaller.getTypings', (args) => {
+	let disposables: vscode.Disposable[] = [];
+	
+	disposables.push(vscode.commands.registerCommand('typingsInstaller.getTypings', () => {
 		getTypings();
-	});
+	}));
 	
-	context.subscriptions.push(disposable);
-	
-	disposable = vscode.commands.registerCommand('typingsInstaller.getTypingsSave', (args) => {
+	disposables.push(vscode.commands.registerCommand('typingsInstaller.getTypingsSave', () => {
 		getTypings({ save: true });
-	});
+	}));
 	
-	context.subscriptions.push(disposable);
+	context.subscriptions.concat(disposables);
 }
 
 function getTypings(options?: InstallOptions): void {
 	options = options || {};
 	
 	if (typeof vscode.workspace.rootPath === 'undefined' || vscode.workspace.rootPath === null) {	
-		vscode.window.showErrorMessage("No project currently open");
+		vscode.window.showErrorMessage('No project currently open');
 		return;
 	}
 	
@@ -30,7 +29,7 @@ function getTypings(options?: InstallOptions): void {
 			return typingsUtil.installPackage(packageName, options);
 		}).then(function(packageName) {
 			vscode.window.showInformationMessage('Typings for `' + packageName + '` installed!');
-		}).catch(function(error) {
+		}, function(error) {
 			if (error === 'CANCELLED') {
 				return;
 			}
@@ -39,18 +38,9 @@ function getTypings(options?: InstallOptions): void {
 		});
 }
 
-//Wraps vscode promise with Q promise
-function requestPackageName(): Q.Promise<string> {
-	var deferred = Q.defer<string>();
-	
-	vscode.window.showInputBox({ 
-		prompt: "Enter package name",
-		placeHolder: "e.g. node" 
-	}).then(function(packageName) {
-		return deferred.resolve(packageName);
-	}, function(error) {
-		return deferred.reject(error);
+function requestPackageName(): Thenable<string> {
+	return vscode.window.showInputBox({ 
+		prompt: 'Enter package name',
+		placeHolder: 'e.g. node' 
 	});
-	
-	return deferred.promise;
 }
