@@ -7,7 +7,7 @@ export class TSDInstaller implements ITypingInstaller {
     displayName: string;
     
     constructor() {
-        this.displayName = 'TSD';
+        this.displayName = 'TSD (deprecated)';
     }
     
     public init(): Thenable<string> {
@@ -15,7 +15,7 @@ export class TSDInstaller implements ITypingInstaller {
         return vscode.window.showQuickPick(options).then((o) => {
             if (o === options[0]) {
                 return this.install();
-            } else {
+            } else if (o === options[1]) {
                 return this.search();
             }
         });

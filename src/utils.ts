@@ -6,13 +6,13 @@ export function requestTypingName(): Thenable<string> {
 		placeHolder: 'e.g. node' 
 	}).then((typingName) => {
         if (typeof typingName === 'undefined' || typingName === null) {
-            return Promise.reject<string>('CANCELLED');
+            return Promise.reject<string>(null);
         }
         
         typingName = typingName.trim();
         
         if (typingName === '') {
-            return Promise.reject<string>('CANCELLED');
+            return Promise.reject<string>(null);
         }
 
         return typingName;

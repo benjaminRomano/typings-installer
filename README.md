@@ -1,22 +1,26 @@
 # Typings Installer
 
-A VS Code extension that gets typings for you
+A VS Code extension to search and install typings
 
 ### Commands
 
-#####Get Typings
+##### Typings Installer: Typings
+Use typings to search and install dt files
 
-Gets typings for package specified
+##### Typings Installer: TSD
+Use TSD to search and install dt files
 
-### NOTE: REQUIRES TSD AND typings
+### NOTE: Make sure to install the node package required for the typings service you are using
 
-Install tsd and typings with 
+Install tsd or typings with 
 ```bash
+// For TSD
 $ npm install -g tsd
+// For typings
 $ npm install -g typings
 ```
 
-##### NOTE: TSD is being deprecated
+#### NOTE: TSD is being deprecated!
 
 Learn more about TSD here: https://github.com/DefinitelyTyped/tsd
 

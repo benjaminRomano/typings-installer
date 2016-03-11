@@ -15,7 +15,7 @@ export class TypingsInstaller implements ITypingInstaller {
         return vscode.window.showQuickPick(options).then((o) => {
             if (o === options[0]) {
                 return this.install();
-            } else {
+            } else if (o === options[1]) {
                 return this.search();
             }
         });
@@ -70,7 +70,7 @@ export class TypingsInstaller implements ITypingInstaller {
         
         return new Promise<void>((resolve, reject) => {
             childProcess.exec(command, { cwd: vscode.workspace.rootPath }, function (error, stdout) {
-                if (error || stdout.toString().indexOf('zero results') !== -1) {
+                if (error || stdout.toString().indexOf('No results') !== -1) {
                     reject('No typings found for `' + packageName + '`');
                     return;
                 }
@@ -93,7 +93,7 @@ export class TypingsInstaller implements ITypingInstaller {
             
             childProcess.exec(command, { cwd: vscode.workspace.rootPath }, (error, stdout) => {
                 console.log(this);
-                if (error || stdout.toString().indexOf('zero results') !== -1) {
+                if (error || stdout.toString().indexOf('No results') !== -1) {
                     reject('No typings found for `' + typingName + '`');
                     return;
                 }
