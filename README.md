@@ -8,15 +8,16 @@ A VS Code extension that gets typings for you
 
 Gets typings for package specified
 
-#####Get Typings And Save
-	
-Gets typings for package specified **and** adds typings to tsd.json
+### NOTE: REQUIRES TSD AND typings
 
-### NOTE: REQUIRES TSD
-
-Install tsd with 
+Install tsd and typings with 
 ```bash
 $ npm install -g tsd
+$ npm install -g typings
 ```
 
+##### NOTE: TSD is being deprecated
+
 Learn more about TSD here: https://github.com/DefinitelyTyped/tsd
+
+Learn more about typings here: https://github.com/typings/typings
