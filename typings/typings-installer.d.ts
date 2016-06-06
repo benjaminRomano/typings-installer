@@ -3,6 +3,6 @@ interface InstallOptions {
 }
 
 interface ITypingInstaller {
-    init(): Thenable<any> | Promise<any>;
+    init(): Thenable<void> | Promise<void>;
     displayName: string;
 }

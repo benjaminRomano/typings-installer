@@ -1,3 +1,7 @@
+## 0.2.0
+Fixed typings install to work with typings@1.0.0
+Removed install/search dialog.
+
 ## 0.1.1
 Cleaned up code. Split up TSD and typings into two seperate commands.
 

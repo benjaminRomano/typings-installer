@@ -5,121 +5,115 @@ import * as vscode from 'vscode';
 
 export class TypingsInstaller implements ITypingInstaller {
     displayName: string;
-    
+
     constructor() {
         this.displayName = 'Typings';
     }
-    
-    public init(): Thenable<string> {
-        let options = ['install', 'search'];
-        return vscode.window.showQuickPick(options).then((o) => {
-            if (o === options[0]) {
-                return this.install();
-            } else if (o === options[1]) {
-                return this.search();
-            }
-        });
+
+    public init(): Thenable<void> {
+        return this.install();
     }
-    
-    private install(): Thenable<string> {
-        
-        let typingName = "";
-        var args = "";
-        
-        return utils.requestTypingName()
-            .then((name) => {
-                typingName = name;        
-                return this.getAmbientArgs();
-            }).then((a) => {
+
+    private install(): Thenable<void> {
+
+        let typingName = '';
+        let args = '';
+
+        return this.search()
+            .then(name => {
+                typingName = name;
+                return this.getGlobalArgs();
+            }).then(a => {
                 args += a;
                 return this.getSaveArgs();
-            }).then((a) => {
-                args += " " + a;
+            }).then(a => {
+                args += ' ' + a;
                 return this.performInstall(typingName, args);
             }).then(() => {
-                return vscode.window.showInformationMessage("Typings for `" + typingName + "` installed successfully!");
+                vscode.window.showInformationMessage('Typings for `' + typingName + '` installed successfully!');
             });
     }
-    
-    private getAmbientArgs(): Thenable<string> {
-        var options = ["ambient ", "no-ambient"];
-        
-        return vscode.window.showQuickPick(options).then((o) => {
+
+    private getGlobalArgs(): Thenable<string> {
+        let options = ['global ', 'no-global'];
+
+        return vscode.window.showQuickPick(options).then(o => {
             if (o === options[0]) {
-                return "--ambient";
+                return '--global';
             }
-            
-            return "";
+
+            return '';
         });
     }
-    
+
     private getSaveArgs(): Thenable<string> {
-        var options = ["save", "no-save"];
-        
-        return vscode.window.showQuickPick(options).then((o) => {
+        let options = ['save', 'no-save'];
+
+        return vscode.window.showQuickPick(options).then(o => {
             if (o === options[0]) {
-                return "--save";
+                return '--save';
             }
-            
-            return "";
+
+            return '';
         });
     }
-    
+
     private performInstall(packageName: string, args: string): Promise<any> {
-        let command = 'typings install ' + packageName + " " + args;
-        
+        let command = 'typings install ' + packageName + ' ' + args;
+
         return new Promise<void>((resolve, reject) => {
-            childProcess.exec(command, { cwd: vscode.workspace.rootPath }, function (error, stdout) {
-                if (error || stdout.toString().indexOf('No results') !== -1) {
-                    reject('No typings found for `' + packageName + '`');
+            childProcess.exec(command, { cwd: vscode.workspace.rootPath }, (error, stdout) => {
+                if (error || stdout.toString().indexOf('ERR!') !== -1) {
+                    reject('Failed to install typings for `' + packageName + '`');
                     return;
                 }
-                
+
                 resolve();
             });
         });
     }
-    
+
     private search(): Thenable<string> {
         return utils.requestTypingName()
             .then(this.performSearch)
-            .then(vscode.window.showQuickPick);
+            .then(vscode.window.showQuickPick)
+            .then(name => {
+                if (!name) {
+                    return Promise.reject<string>(null);
+                }
+
+                return name;
+            });
     }
-    
-    private performSearch(typingName: string) : Promise<vscode.QuickPickItem[]> {
+
+    private performSearch(typingName: string): Promise<string[]> {
         let command = 'typings search ' + typingName;
-        
-        return new Promise<vscode.QuickPickItem[]>((resolve, reject) => {
-            
+
+        return new Promise<string[]>((resolve, reject) => {
+
             childProcess.exec(command, { cwd: vscode.workspace.rootPath }, (error, stdout) => {
-                console.log(this);
                 if (error || stdout.toString().indexOf('No results') !== -1) {
                     reject('No typings found for `' + typingName + '`');
                     return;
                 }
-                
+
                 resolve(createTypingsQuickPickItems(stdout.toString()));
             });
         });
     }
 }
 
-function createTypingsQuickPickItems(output: string): vscode.QuickPickItem[] {
-    let rows = output.split("\n");
-    rows.splice(0,3);
-    
+function createTypingsQuickPickItems(output: string): string[] {
+    let rows = output.split('\n');
+    rows.splice(0, 3);
+
     return rows.map(l => {
         let parts = l.match(/\S+/g);
-        
+
         if (!parts) {
             return null;
         }
-        
-        var quickPickItem: vscode.QuickPickItem = {
-            label: parts[0],
-            description: "[" + parts[1] + "]" + "\t—\t" + parts[2]
-        }
-        
-        return quickPickItem;
+
+        return parts[1] + '~' + parts[0];
     }).filter(l => l !== null);
 }
